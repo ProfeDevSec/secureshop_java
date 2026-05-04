@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Administración', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<h3 class="mb-4"><i class="bi bi-gear me-2 text-primary"></i>Panel de Administración</h3>
+
+<div class="row g-3 mb-5">
+    <div class="col-md-3" th:each="item : ${ {
+        {label: 'Usuarios',         val: stats.usuarios,  icon: 'people',           color: 'primary'},
+        {label: 'Productos activos',val: stats.productos, icon: 'box-seam',         color: 'success'},
+        {label: 'Pedidos totales',  val: stats.pedidos,   icon: 'bag',              color: 'warning'},
+        {label: 'Reseñas',          val: stats.resenas,   icon: 'chat-square-text', color: 'info'}
+    } }">
+    </div>
+</div>
+
+<!-- Stats cards directos (Thymeleaf no soporta mapas literales inline fácilmente) -->
+<div class="row g-3 mb-5">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-people fs-1 text-primary mb-2 d-block"></i>
+                <div class="fs-2 fw-bold" th:text="${stats.usuarios}">0</div>
+                <div class="text-muted small">Usuarios</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-box-seam fs-1 text-success mb-2 d-block"></i>
+                <div class="fs-2 fw-bold" th:text="${stats.productos}">0</div>
+                <div class="text-muted small">Productos activos</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-bag fs-1 text-warning mb-2 d-block"></i>
+                <div class="fs-2 fw-bold" th:text="${stats.pedidos}">0</div>
+                <div class="text-muted small">Pedidos totales</div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm text-center">
+            <div class="card-body py-4">
+                <i class="bi bi-chat-square-text fs-1 text-info mb-2 d-block"></i>
+                <div class="fs-2 fw-bold" th:text="${stats.resenas}">0</div>
+                <div class="text-muted small">Reseñas</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="d-flex gap-3">
+    <a href="/admin/usuarios" class="btn btn-outline-primary">
+        <i class="bi bi-people me-1"></i>Gestionar Usuarios
+    </a>
+    <a href="/reportes/exportar" class="btn btn-outline-secondary">
+        <i class="bi bi-journal-text me-1"></i>Ver Logs
+    </a>
+</div>
+
+</th:block>
+</body>
+</html>

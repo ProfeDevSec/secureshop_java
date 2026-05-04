@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Pedido', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<a href="/pedidos/" class="btn btn-sm btn-outline-secondary mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Volver a pedidos
+</a>
+<h3 class="mb-4">
+    <i class="bi bi-receipt me-2 text-primary"></i>
+    Detalle del Pedido <span th:text="'#' + ${pedido.id}">#0</span>
+</h3>
+
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light fw-semibold">Información del pedido</div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-5">Cliente</dt>
+                    <dd class="col-7" th:text="${pedido.username}">user</dd>
+                    <dt class="col-5">Email</dt>
+                    <dd class="col-7 small" th:text="${pedido.email}">email</dd>
+                    <dt class="col-5">Estado</dt>
+                    <dd class="col-7">
+                        <span class="badge"
+                              th:classappend="${pedido.estado == 'completado'} ? 'bg-success' : 'bg-warning text-dark'"
+                              th:text="${pedido.estado}">estado</span>
+                    </dd>
+                    <dt class="col-5">Total</dt>
+                    <dd class="col-7 fw-bold text-primary"
+                        th:text="${'$' + #numbers.formatDecimal(pedido.total, 0, 'COMMA', 0, 'POINT')}">$0</dd>
+                    <dt class="col-5">Fecha</dt>
+                    <dd class="col-7 small text-muted" th:text="${pedido.created_at}">fecha</dd>
+                </dl>
+                <div th:if="${pedido.notas != null and !pedido.notas.isEmpty()}">
+                    <hr>
+                    <p class="small mb-0">
+                        <strong>Notas:</strong> <span th:text="${pedido.notas}">notas</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-light fw-semibold">Ítems del pedido</div>
+            <div class="card-body p-0">
+                <table class="table mb-0 align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>SKU</th><th>Producto</th>
+                            <th>Cant.</th><th>Precio unit.</th><th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${items}">
+                            <td><code class="small" th:text="${item.sku}">SKU</code></td>
+                            <td th:text="${item.nombre}">Prod</td>
+                            <td th:text="${item.cantidad}">1</td>
+                            <td th:text="${'$' + #numbers.formatDecimal(item.precio_unit, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                            <td class="fw-semibold"
+                                th:text="${'$' + #numbers.formatDecimal(item.cantidad * item.precio_unit, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</th:block>
+</body>
+</html>

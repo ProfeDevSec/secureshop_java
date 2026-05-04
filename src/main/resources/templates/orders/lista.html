@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Pedidos', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h3><i class="bi bi-bag me-2 text-primary"></i>Gestión de Pedidos</h3>
+    <a href="/pedidos/nuevo" class="btn btn-primary btn-sm">
+        <i class="bi bi-plus-lg me-1"></i>Nuevo Pedido
+    </a>
+</div>
+<input type="hidden" id="prefsToken" th:value="${prefsToken}">
+
+<div th:if="${!pedidos.isEmpty()}">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th>#</th><th>Cliente</th><th>Estado</th>
+                    <th>Total</th><th>Fecha</th><th></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="p : ${pedidos}">
+                    <td><strong th:text="'#' + ${p.id}">1</strong></td>
+                    <td th:text="${p.username != null} ? ${p.username} : ''">user</td>
+                    <td>
+                        <span class="badge"
+                              th:classappend="${p.estado == 'completado'} ? 'bg-success' : (${p.estado == 'pendiente'} ? 'bg-warning text-dark' : 'bg-secondary')"
+                              th:text="${p.estado}">estado</span>
+                    </td>
+                    <td th:text="${'$' + #numbers.formatDecimal(p.total, 0, 'COMMA', 0, 'POINT')}">$0</td>
+                    <td class="small text-muted" th:text="${p.created_at}">fecha</td>
+                    <td>
+                        <!-- [VULN-IDOR-01] El ID del pedido está expuesto sin validación server-side -->
+                        <a th:href="@{/pedidos/{id}(id=${p.id})}"
+                           class="btn btn-sm btn-outline-primary">Ver</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="alert alert-info" th:if="${pedidos.isEmpty()}">
+    No hay pedidos registrados.
+</div>
+
+</th:block>
+</body>
+</html>

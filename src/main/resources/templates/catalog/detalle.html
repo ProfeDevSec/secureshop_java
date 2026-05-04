@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{layout :: layout('Producto', ~{::content})}">
+<body>
+<th:block th:fragment="content">
+
+<a href="/catalogo/" class="btn btn-sm btn-outline-secondary mb-3">
+    <i class="bi bi-arrow-left me-1"></i>Volver al catálogo
+</a>
+
+<div class="row g-4">
+    <!-- Datos del producto -->
+    <div class="col-md-7">
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <span class="badge bg-secondary mb-2" th:text="${producto.categoria}">Cat</span>
+                <h3 class="mb-1" th:text="${producto.nombre}">Nombre</h3>
+                <p class="text-muted small mb-3">
+                    SKU: <code th:text="${producto.sku}">SKU</code>
+                </p>
+                <p th:text="${producto.descripcion}">Descripción</p>
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <span class="fs-3 fw-bold text-primary"
+                          th:text="${'$' + #numbers.formatDecimal(producto.precio, 0, 'COMMA', 0, 'POINT')}">$0</span>
+                    <span class="badge fs-6"
+                          th:classappend="${producto.stock > 10} ? 'bg-success' : 'bg-warning text-dark'"
+                          th:text="'Stock: ' + ${producto.stock}">Stock</span>
+                </div>
+                <a th:href="@{/pedidos/nuevo(producto=${producto.id})}"
+                   class="btn btn-primary mt-3 w-100">
+                    <i class="bi bi-cart-plus me-1"></i>Agregar al pedido
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Reseñas -->
+    <div class="col-md-5">
+        <h5 class="mb-3"><i class="bi bi-chat-square-text me-2"></i>Reseñas de clientes</h5>
+
+        <th:block th:if="${!resenas.isEmpty()}">
+            <div class="card mb-3 border-0 shadow-sm" th:each="r : ${resenas}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <strong th:text="${r.username}">user</strong>
+                        <span class="text-warning">
+                            <!-- Estrellas según puntuación -->
+                            <th:block th:each="i : ${#numbers.sequence(1, r.puntuacion)}">★</th:block>
+                        </span>
+                    </div>
+                    <small class="text-muted" th:text="${r.created_at}">fecha</small>
+                    <p class="mt-2 mb-0">
+                        <span th:utext="${r.comentario}">comentario</span>
+                    </p>
+                </div>
+            </div>
+        </th:block>
+
+        <p class="text-muted small" th:if="${resenas.isEmpty()}">
+            Sin reseñas todavía. ¡Sé el primero!
+        </p>
+
+        <hr>
+        <h6>Dejar una reseña</h6>
+        <form th:action="@{/catalogo/producto/{id}/resena(id=${producto.id})}" method="POST">
+            <div class="mb-2">
+                <label class="form-label small">Puntuación</label>
+                <select name="puntuacion" class="form-select form-select-sm">
+                    <option th:each="i : ${#numbers.sequence(1,5)}"
+                            th:value="${i}"
+                            th:text="${i} + (${i} == 1 ? ' estrella' : ' estrellas')">1</option>
+                </select>
+            </div>
+            <div class="mb-2">
+                <label class="form-label small">Comentario</label>
+                <textarea name="comentario" class="form-control form-control-sm" rows="3"
+                          placeholder="Escribe tu opinión..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-sm btn-outline-primary w-100">
+                <i class="bi bi-send me-1"></i>Publicar reseña
+            </button>
+        </form>
+    </div>
+</div>
+
+</th:block>
+</body>
+</html>
